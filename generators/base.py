@@ -5,17 +5,15 @@ Base exercise generator abstract class.
 import os
 import json
 from abc import ABC, abstractmethod
-from langchain_openai import ChatOpenAI
+from openai import OpenAI
 from models.exercises import Exercise
 
 
 class ExerciseGenerator(ABC):
     def __init__(self, model="gpt-4o", temperature=0):
-        self.llm = ChatOpenAI(
-            model=model, 
-            temperature=temperature, 
-            api_key=os.environ["OPENAI_API_KEY"]
-        )
+        self.client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+        self.model = model
+        self.temperature = temperature
     
     @abstractmethod
     def get_exercise_type(self) -> str:
@@ -70,10 +68,14 @@ Create exercises with rich, engaging contexts similar to the examples above. Use
 
 {self.get_json_schema()}"""
         
-        response = self.llm.invoke(json_prompt)
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": json_prompt}],
+            temperature=self.temperature
+        )
         
         # Clean the response content
-        content = response.content.strip()
+        content = response.choices[0].message.content.strip()
         if content.startswith("```json"):
             content = content[7:]
         if content.endswith("```"):
