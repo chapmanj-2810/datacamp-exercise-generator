@@ -5,8 +5,8 @@ Learning designer for intelligent exercise planning.
 import os
 import json
 from openai import OpenAI
-from models.planning import LearningPlan
-from generators.factory import get_exercise_generator
+from ..models.planning import LearningPlan
+from ..generators.factory import get_exercise_generator
 
 
 class LearningDesigner:
