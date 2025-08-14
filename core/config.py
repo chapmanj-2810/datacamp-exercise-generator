@@ -18,7 +18,6 @@ class Config:
     # Exercise Generation Settings
     MIN_EXERCISES: int = 2
     MAX_EXERCISES: int = 4
-    DEFAULT_XP: int = 50
     
     @classmethod
     def validate(cls) -> None:
