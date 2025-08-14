@@ -4,7 +4,7 @@ Learning designer for intelligent exercise planning.
 
 import os
 import json
-from langchain_openai import ChatOpenAI
+from openai import OpenAI
 from models.planning import LearningPlan
 from generators.factory import get_exercise_generator
 
@@ -14,11 +14,9 @@ class LearningDesigner:
     
     def __init__(self, model="gpt-4o", temperature=0.3):
         """Initialize with slightly higher temperature for more creative planning."""
-        self.llm = ChatOpenAI(
-            model=model,
-            temperature=temperature,
-            api_key=os.environ["OPENAI_API_KEY"]
-        )
+        self.client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+        self.model = model
+        self.temperature = temperature
     
     def create_learning_plan(self, video_content: str, provided_objectives: list[str] = None) -> LearningPlan:
         """Analyze video content and create a comprehensive learning plan."""
@@ -88,10 +86,14 @@ Respond with ONLY valid JSON in this exact format:
   ]
 }}"""
 
-        response = self.llm.invoke(planning_prompt)
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": planning_prompt}],
+            temperature=self.temperature
+        )
         
         # Clean and parse response
-        content = response.content.strip()
+        content = response.choices[0].message.content.strip()
         if content.startswith("```json"):
             content = content[7:]
         if content.endswith("```"):
@@ -121,14 +123,14 @@ Respond with ONLY valid JSON in this exact format:
             
             # Generate exercises for each type using specific objectives
             for exercise_type, objectives in plans_by_type.items():
-                generator = get_exercise_generator(exercise_type.value, model="gpt-4o")
+                generator = get_exercise_generator(exercise_type.value, model=self.model)
                 exercises = generator.generate_markdown_exercises(video_content, objectives)
                 all_exercises.extend(exercises)
         else:
             # Generate exercises by type without specific objectives (let generators decide content)
             exercise_types = [plan.exercise_type for plan in learning_plan.exercise_plans]
             for exercise_type in exercise_types:
-                generator = get_exercise_generator(exercise_type.value, model="gpt-4o")
+                generator = get_exercise_generator(exercise_type.value, model=self.model)
                 # Generate 1 exercise of this type without specific objective
                 exercises = generator.generate_markdown_exercises(video_content, learning_objectives=None)
                 # Take only the first exercise to match the plan count
