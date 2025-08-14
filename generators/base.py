@@ -4,15 +4,18 @@ Base exercise generator abstract class.
 
 import os
 import json
+import re
+import time
 from abc import ABC, abstractmethod
 from openai import OpenAI
 from ..models.exercises import Exercise
 
 
 class ExerciseGenerator(ABC):
-    def __init__(self, model="gpt-4o", temperature=0):
+    def __init__(self, model="gpt-4o", temperature=0, max_retries=3):
         self.client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
         self.model = model
+        self.max_retries = max_retries
         
         # GPT-5 models only support temperature=1
         if model.startswith("gpt-5"):
@@ -38,8 +41,84 @@ class ExerciseGenerator(ABC):
     def parse_exercises(self, parsed_json: dict) -> list[Exercise]:
         pass
     
-    def generate_exercises(self, video_content: str, learning_objectives: list[str] = None) -> list[Exercise]:
-        """Generate exercises from video content and optional learning objectives."""
+    def clean_json_response(self, content: str) -> str:
+        """Enhanced JSON cleaning to handle various model quirks."""
+        content = content.strip()
+        
+        # Remove wrapping markdown code blocks more carefully
+        # Only remove if they wrap the entire content, not internal code blocks
+        
+        # Check for opening markdown block at start
+        opening_patterns = [
+            r"^```json\s*\n",
+            r"^```\s*\n", 
+            r"^```json\s*",
+            r"^```\s*"
+        ]
+        
+        for pattern in opening_patterns:
+            if re.match(pattern, content, re.MULTILINE):
+                content = re.sub(pattern, "", content, count=1, flags=re.MULTILINE)
+                break
+        
+        # Check for closing markdown block at end
+        if content.endswith('\n```'):
+            content = content[:-4]
+        elif content.endswith('```'):
+            content = content[:-3]
+        
+        content = content.strip()
+        
+        # Remove common prefixes models add (only at the very start)
+        prefixes = ["Here's the JSON:", "The JSON response is:", "Response:", "JSON:"]
+        for prefix in prefixes:
+            if content.startswith(prefix):
+                content = content[len(prefix):].strip()
+                break
+        
+        # More robust JSON boundary detection
+        json_content = self._extract_main_json_object(content)
+        return json_content.strip() if json_content else content.strip()
+    
+    def _extract_main_json_object(self, content: str) -> str:
+        """Extract the main JSON object using bracket counting for proper nesting."""
+        # Find the first opening brace
+        start_pos = content.find('{')
+        if start_pos == -1:
+            return content  # No JSON found, return as-is
+        
+        # Count braces to find the matching closing brace
+        brace_count = 0
+        in_string = False
+        escape_next = False
+        
+        for i, char in enumerate(content[start_pos:], start_pos):
+            if escape_next:
+                escape_next = False
+                continue
+                
+            if char == '\\':
+                escape_next = True
+                continue
+                
+            if char == '"' and not escape_next:
+                in_string = not in_string
+                continue
+                
+            if not in_string:
+                if char == '{':
+                    brace_count += 1
+                elif char == '}':
+                    brace_count -= 1
+                    if brace_count == 0:
+                        # Found the matching closing brace
+                        return content[start_pos:i + 1]
+        
+        # If we get here, braces weren't balanced - return from start to end
+        return content[start_pos:]
+    
+    def generate_single_attempt(self, video_content: str, learning_objectives: list[str] = None) -> list[Exercise]:
+        """Generate exercises in a single attempt (no retries)."""
         # Format objectives section
         if learning_objectives:
             objectives_list = "\n".join(f"- {obj}" for obj in learning_objectives)
@@ -81,13 +160,35 @@ Create exercises with rich, engaging contexts similar to the examples above. Use
             temperature=self.temperature
         )
         
-        # Clean the response content
-        content = response.choices[0].message.content.strip()
-        if content.startswith("```json"):
-            content = content[7:]
-        if content.endswith("```"):
-            content = content[:-3]
-        content = content.strip()
+        # Enhanced JSON cleaning
+        content = self.clean_json_response(response.choices[0].message.content)
         
+        # Parse JSON and validate with Pydantic
         parsed = json.loads(content)
         return self.parse_exercises(parsed)
+    
+    def generate_exercises(self, video_content: str, learning_objectives: list[str] = None) -> list[Exercise]:
+        """Generate exercises with automatic retry on JSON parsing failures."""
+        last_exception = None
+        
+        for attempt in range(self.max_retries):
+            try:
+                return self.generate_single_attempt(video_content, learning_objectives)
+                
+            except (json.JSONDecodeError, KeyError, ValueError) as e:
+                last_exception = e
+                if attempt < self.max_retries - 1:
+                    # Log the failure and retry
+                    print(f"Generation failed on attempt {attempt + 1}/{self.max_retries} for {self.get_exercise_type()}: {str(e)}")
+                    print("Retrying with exponential backoff...")
+                    time.sleep(2 ** attempt)  # Exponential backoff: 1s, 2s, 4s
+                    continue
+                else:
+                    # Final attempt failed, raise detailed error
+                    break
+        
+        # All attempts failed
+        raise Exception(
+            f"Failed to generate valid {self.get_exercise_type()} exercises after {self.max_retries} attempts. "
+            f"Last error: {last_exception}"
+        ) from last_exception
