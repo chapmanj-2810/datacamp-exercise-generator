@@ -50,3 +50,24 @@ class MultipleAnswerMCQExercise(Exercise):
                 "success_message": "Wow, you sure are smashing this! Let's dive a little deeper into some of these multi-agent design patterns."
             }
         }
+
+
+# Drag and Drop Classification Exercise Components
+class DraggableItem(BaseModel):
+    content: str = Field(description="The text content of the draggable item")
+    id: str = Field(description="Unique identifier for the draggable item")
+    incorrect_message: str = Field(description="Feedback message when item is placed in wrong category")
+
+
+class DropZone(BaseModel):
+    id: str = Field(description="Unique identifier for the drop zone")
+    title: str = Field(description="Display title for the drop zone category")
+    draggable_items: list[DraggableItem] = Field(description="Items that belong in this drop zone")
+
+
+# Drag and Drop Classification Exercise
+class DragDropClassifyExercise(Exercise):
+    instructions: str = Field(description="Instructions for the learner on how to complete the exercise")
+    hints: list[str] = Field(description="A list of 1-2 single-sentence statements to help learners")
+    drop_zones: list[DropZone] = Field(description="Categories/zones where items can be dropped")
+    success_message: str = Field(description="Success message when exercise is completed correctly")
