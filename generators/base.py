@@ -15,8 +15,15 @@ class ExerciseGenerator(ABC):
     def __init__(self, model="gpt-4o", temperature=0, max_retries=3):
         self.client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
         self.model = model
-        self.temperature = temperature
         self.max_retries = max_retries
+        
+        # GPT-5 models only support temperature=1
+        if model.startswith("gpt-5"):
+            self.temperature = 1.0
+            if temperature != 0:  # Only warn if user explicitly set a different temperature
+                print(f"Warning: {model} only supports temperature=1. Adjusting from {temperature} to 1.0")
+        else:
+            self.temperature = temperature
     
     @abstractmethod
     def get_exercise_type(self) -> str:
