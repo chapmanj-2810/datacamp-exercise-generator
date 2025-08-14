@@ -34,7 +34,7 @@ for exercise in exercises:
 
 ## Usage Options
 
-### Option 1: Intelligent Design with Custom Objectives
+### Option 1: Intelligent Design with Custom Objectives
 
 ```python
 objectives = ["Understand concept X", "Apply technique Y"]
