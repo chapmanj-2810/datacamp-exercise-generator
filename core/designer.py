@@ -16,7 +16,14 @@ class LearningDesigner:
         """Initialize with slightly higher temperature for more creative planning."""
         self.client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
         self.model = model
-        self.temperature = temperature
+        
+        # GPT-5 models only support temperature=1
+        if model.startswith("gpt-5"):
+            self.temperature = 1.0
+            if temperature != 0.3:  # Only warn if user explicitly set a different temperature
+                print(f"Warning: {model} only supports temperature=1. Adjusting from {temperature} to 1.0")
+        else:
+            self.temperature = temperature
     
     def create_learning_plan(self, video_content: str, provided_objectives: list[str] = None) -> LearningPlan:
         """Analyze video content and create a comprehensive learning plan."""
