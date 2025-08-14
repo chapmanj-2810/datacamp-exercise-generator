@@ -55,5 +55,34 @@ You think their single agent system could be _refactored_ as a multi-agent syste
             "Single agents can struggle to manage a large number of tools, especially if the tools are different but similar.",
             "Think about how specialization can improve both performance and maintainability in complex systems."
         ]
+    },
+    "drag_drop_classify": {
+        "titles": [
+            "Multi-agent design patterns",
+            "Classifying AI model types", 
+            "Database normalization levels",
+            "Programming paradigms"
+        ],
+        "contexts": [
+            """One of things you notice as you review your colleague's codebase is that they've built their own multi-agent collaboration framework, which includes a substantial amount of custom code.
+
+You suggest that they adopt an establish design pattern, such as a **network**/swarm/decentralized or a **supervisor** architecture, so they can leverage pre-existing open-source libraries and improve the interpretability of the codebase.""",
+            
+            """You're working as a data scientist at a tech company and need to help train junior developers on different machine learning approaches. The team has been mixing up supervised and unsupervised learning concepts.""",
+            
+            """As a database architect, you're mentoring a new developer who is struggling to understand when to apply different levels of database normalization in their schema design."""
+        ],
+        "instructions": [
+            "Classify these statements as describing either a **supervisor** or a **network** multi-agent.",
+            "Drag each technique into the correct machine learning category.",
+            "Sort these database design principles into their appropriate normalization levels.",
+            "Classify each programming concept into its corresponding paradigm."
+        ],
+        "hints": [
+            "Recall that a supervisor multi-agent is like a manager at a company with worker agents underneath to delegate tasks to.",
+            "In supervised learning, the algorithm learns from labeled training data with known correct outputs.",
+            "Remember that higher normalization levels reduce redundancy but may require more complex queries.",
+            "Think about whether the paradigm focuses on data transformation, object modeling, or explicit instructions."
+        ]
     }
 }
