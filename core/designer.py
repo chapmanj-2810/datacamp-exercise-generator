@@ -34,6 +34,11 @@ AVAILABLE EXERCISE TYPES:
    - Best for: Testing understanding of multiple related concepts, identifying several correct approaches
    - Use when: Multiple correct answers exist or learners need to identify all applicable items
    - Example: "Which of the following are benefits of Y?" (select all that apply)
+
+3. **drag_drop_classify** (Drag-and-Drop Classification):
+   - Best for: Testing ability to categorize, classify, or sort concepts into groups
+   - Use when: Learners need to demonstrate understanding of how items relate to categories
+   - Example: "Classify these algorithms as supervised or unsupervised learning"
 """
 
         # Handle provided objectives vs. auto-generated objectives
@@ -57,6 +62,7 @@ Determine which exercise types are most appropriate for each learning objective 
 LEARNING DESIGN PRINCIPLES:
 - Start with foundational concepts (single MCQ for definitions/basic understanding)
 - Progress to application and synthesis (multiple MCQ for identifying multiple approaches/benefits)
+- Use drag-drop classification for categorization and grouping concepts
 - Each exercise should target one specific, measurable learning objective
 - Vary exercise types to maintain engagement
 - Consider cognitive load and difficulty progression
@@ -81,6 +87,12 @@ Respond with ONLY valid JSON in this exact format:
       "exercise_type": "multiple_mcq", 
       "learning_objective": "Another learning objective",
       "rationale": "Why multiple choice with multiple answers fits this objective",
+      "difficulty_level": "Intermediate"
+    }},
+    {{
+      "exercise_type": "drag_drop_classify",
+      "learning_objective": "Classification learning objective",
+      "rationale": "Why drag-drop classification is appropriate for this objective",
       "difficulty_level": "Intermediate"
     }}
   ]
