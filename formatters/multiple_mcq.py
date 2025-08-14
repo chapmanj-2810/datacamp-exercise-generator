@@ -3,7 +3,7 @@ Formatter for multiple-answer multiple choice exercises.
 """
 
 from .base import ExerciseFormatter
-from models.exercises import MultipleAnswerMCQExercise
+from ..models.exercises import MultipleAnswerMCQExercise
 
 
 class MultipleAnswerMCQFormatter(ExerciseFormatter):
