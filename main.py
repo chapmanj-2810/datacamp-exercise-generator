@@ -71,6 +71,10 @@ def main():
     
     args = parser.parse_args()
     
+    # Warn about GPT-5 temperature restrictions upfront
+    if args.model.startswith("gpt-5"):
+        print(f"Note: {args.model} automatically uses temperature=1.0 (required by OpenAI)")
+    
     try:
         # Generate exercises based on type
         if args.type == "intelligent":
