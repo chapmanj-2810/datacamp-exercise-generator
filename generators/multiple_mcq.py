@@ -3,9 +3,9 @@ Generator for multiple-answer multiple choice exercises.
 """
 
 from .base import ExerciseGenerator
-from models.exercises import MultipleAnswerMCQExercise
-from models.examples import EXERCISE_EXAMPLES
-from formatters.multiple_mcq import MultipleAnswerMCQFormatter
+from ..models.exercises import MultipleAnswerMCQExercise
+from ..models.examples import EXERCISE_EXAMPLES
+from ..formatters.multiple_mcq import MultipleAnswerMCQFormatter
 
 
 class MultipleAnswerMCQGenerator(ExerciseGenerator):
