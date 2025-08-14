@@ -5,6 +5,7 @@ Factory function for creating exercise generators.
 from .base import ExerciseGenerator
 from .single_mcq import SingleAnswerMCQGenerator
 from .multiple_mcq import MultipleAnswerMCQGenerator
+from .drag_drop_classify import DragDropClassifyGenerator
 
 
 def get_exercise_generator(exercise_type: str = "single_mcq", **kwargs) -> ExerciseGenerator:
@@ -12,6 +13,7 @@ def get_exercise_generator(exercise_type: str = "single_mcq", **kwargs) -> Exerc
     generators = {
         "single_mcq": SingleAnswerMCQGenerator,
         "multiple_mcq": MultipleAnswerMCQGenerator,
+        "drag_drop_classify": DragDropClassifyGenerator,
     }
     
     if exercise_type not in generators:
