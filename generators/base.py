@@ -6,7 +6,7 @@ import os
 import json
 from abc import ABC, abstractmethod
 from openai import OpenAI
-from models.exercises import Exercise
+from ..models.exercises import Exercise
 
 
 class ExerciseGenerator(ABC):
