@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 class ExerciseType(str, Enum):
     SINGLE_MCQ = "single_mcq"
     MULTIPLE_MCQ = "multiple_mcq"
+    DRAG_DROP_CLASSIFY = "drag_drop_classify"
 
 
 class ExercisePlan(BaseModel):
