@@ -32,7 +32,8 @@ Example Hints:
     
     def get_json_schema(self) -> str:
         return """Respond with ONLY valid JSON in this exact format (no markdown, no extra text).
-Create exactly 2 drop zones (categories) with 2-4 draggable items total (distributed across the zones):
+Create exactly 2 OR 3 drop zones (categories) with 4-6 draggable items total (distributed across the zones).
+Whether using 2 or 3 zones: distribute 4-6 items total.
 
 {
   "exercises": [
@@ -61,6 +62,17 @@ Create exactly 2 drop zones (categories) with 2-4 draggable items total (distrib
               "content": "Item that belongs in this category",
               "id": "item_2", 
               "incorrect_message": "Feedback explaining why this belongs in category 2"
+            }
+          ]
+        },
+        {
+          "id": "category_3",
+          "title": "Third Category Name (optional - include only if using 3 categories)", 
+          "draggable_items": [
+            {
+              "content": "Item that belongs in this category",
+              "id": "item_3", 
+              "incorrect_message": "Feedback explaining why this belongs in category 3"
             }
           ]
         }
