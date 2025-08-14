@@ -1,0 +1,20 @@
+"""
+Factory function for creating exercise generators.
+"""
+
+from .base import ExerciseGenerator
+from .single_mcq import SingleAnswerMCQGenerator
+from .multiple_mcq import MultipleAnswerMCQGenerator
+
+
+def get_exercise_generator(exercise_type: str = "single_mcq", **kwargs) -> ExerciseGenerator:
+    """Factory function to get the appropriate exercise generator."""
+    generators = {
+        "single_mcq": SingleAnswerMCQGenerator,
+        "multiple_mcq": MultipleAnswerMCQGenerator,
+    }
+    
+    if exercise_type not in generators:
+        raise ValueError(f"Unknown exercise type: {exercise_type}. Available types: {list(generators.keys())}")
+    
+    return generators[exercise_type](**kwargs)
