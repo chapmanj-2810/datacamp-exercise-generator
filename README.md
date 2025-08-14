@@ -5,6 +5,7 @@ An intelligent system for automatically generating DataCamp exercises from video
 ## Features
 - 🤖 Intelligent exercise type selection
 - 📝 Multiple choice questions (single and multiple answer)
+- 🏷️ Drag-and-drop classification exercises
 - 🎯 Learning objective-driven generation  
 - 🏗️ Modular, extensible architecture
 - 💻 Both CLI and Python API support
@@ -61,6 +62,9 @@ python -m datacamp_exercise_generator video.md --type intelligent
 # Generate only single-answer MCQs
 python -m datacamp_exercise_generator video.md --type single_mcq
 
+# Generate drag-and-drop classify exercises
+python -m datacamp_exercise_generator video.md --type drag_drop_classify
+
 # Save to file
 python -m datacamp_exercise_generator video.md --objectives "Learn X" --output exercises.md
 ```
@@ -77,7 +81,7 @@ exercises = generate_exercises_intelligent("video.md", objectives=["Learn X", "U
 print_exercises(exercises)
 
 # Single exercise type
-exercises = generate_exercises_single_type("video.md", "multiple_mcq", objectives=["Learn Z"])
+exercises = generate_exercises_single_type("video.md", "drag_drop_classify", objectives=["Learn Z"])
 print_exercises(exercises)
 
 # Auto-generated objectives
@@ -111,8 +115,8 @@ from datacamp_exercise_generator.core import load_video_content
 
 video_content = load_video_content('video.md')
 
-# Generate only single-answer MCQs
-generator = get_exercise_generator("single_mcq")
+# Generate only drag-and-drop classify exercises
+generator = get_exercise_generator("drag_drop_classify")
 exercises = generator.generate_markdown_exercises(video_content, ["Your objective"])
 
 for exercise in exercises:
@@ -129,7 +133,7 @@ arguments:
 
 options:
   --objectives [OBJECTIVES ...]    Learning objectives (optional)
-  --type {single_mcq,multiple_mcq,intelligent}    Exercise generation type (default: intelligent)
+  --type {single_mcq,multiple_mcq,drag_drop_classify,intelligent}    Exercise generation type (default: intelligent)
   --model MODEL           OpenAI model to use (default: gpt-4o)
   --output OUTPUT         Output file (optional, prints to stdout if not provided)
 ```
@@ -159,6 +163,7 @@ datacamp-exercise-generator/
 
 The system generates clean DataCamp exercise format:
 
+#### Multiple Choice Exercise
 ```markdown
 ## Understanding Fragile Evaluation
 
@@ -185,6 +190,45 @@ You have developed an AI travel assistant that is facing issues...
 - Ideal test cases do not reflect real-world usage.
 - Correct! Using real queries helps the AI agent handle diverse inputs effectively.
 - Ignoring multilingual inputs can lead to user dissatisfaction.
+```
+
+#### Drag-and-Drop Classification Exercise
+```markdown
+## Multi-agent design patterns
+
+```yaml
+type: DragAndDropExercise
+key: 
+xp: 100
+version: v2
+data:
+  assignment: >-
+    One of things you notice as you review your colleague's codebase is that
+    they've built their own multi-agent collaboration framework...
+  hint: >-
+    - Recall that a supervisor multi-agent is like a manager at a company with
+    worker agents underneath to delegate tasks to.
+  instructions: >-
+    - Classify these statements as describing either a **supervisor** or a
+    **network** multi-agent.
+  question:
+    correctnessConditions:
+      checks:
+        - condition: check_target(item_1) == supervisor_zone
+          message: >-
+            In a supervisor multi-agent architecture...
+          shouldBe: true
+    flavor: Classify
+    solution:
+      - id: options
+        title: Options
+      - draggableItems:
+          - content: One agent delegates tasks to the others
+            id: item_1
+            incorrectMessage: >-
+              In a supervisor multi-agent architecture...
+        id: supervisor_zone
+        title: Supervisor Multi-Agent
 ```
 
 ## Development

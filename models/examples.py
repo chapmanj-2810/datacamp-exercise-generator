@@ -59,6 +59,7 @@ You think their single agent system could be _refactored_ as a multi-agent syste
     "drag_drop_classify": {
         "titles": [
             "Multi-agent design patterns",
+            "Getting tested on tests",
             "Classifying AI model types", 
             "Database normalization levels",
             "Programming paradigms"
@@ -68,18 +69,24 @@ You think their single agent system could be _refactored_ as a multi-agent syste
 
 You suggest that they adopt an establish design pattern, such as a **network**/swarm/decentralized or a **supervisor** architecture, so they can leverage pre-existing open-source libraries and improve the interpretability of the codebase.""",
             
-            """You're working as a data scientist at a tech company and need to help train junior developers on different machine learning approaches. The team has been mixing up supervised and unsupervised learning concepts.""",
+            """As the lead engineer on a new AI-powered weather app, you've been working for months to build a reliable and accurate agentic system to handle queries about historical weather data and international weather forecasts.
+
+Before putting this into production, you want to perform a series of tests to give you confidence that it can survive the choppy waters of a production environment.""",
+            
+            """You're working as a data scientist at a tech company and need to help train junior developers on different machine learning approaches. The team has been mixing up supervised, unsupervised, and reinforcement learning concepts.""",
             
             """As a database architect, you're mentoring a new developer who is struggling to understand when to apply different levels of database normalization in their schema design."""
         ],
         "instructions": [
             "Classify these statements as describing either a **supervisor** or a **network** multi-agent.",
+            "Match the checks to the type of testing they belong to.",
             "Drag each technique into the correct machine learning category.",
             "Sort these database design principles into their appropriate normalization levels.",
             "Classify each programming concept into its corresponding paradigm."
         ],
         "hints": [
             "Recall that a supervisor multi-agent is like a manager at a company with worker agents underneath to delegate tasks to.",
+            "Unit testing ensures that each component is working correctly. Integration testing ensures that each component is communicating and operating correctly. Performance testing focuses on how the system performs under different circumstances.",
             "In supervised learning, the algorithm learns from labeled training data with known correct outputs.",
             "Remember that higher normalization levels reduce redundancy but may require more complex queries.",
             "Think about whether the paradigm focuses on data transformation, object modeling, or explicit instructions."
