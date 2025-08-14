@@ -3,7 +3,7 @@ Base formatter abstract class.
 """
 
 from abc import ABC, abstractmethod
-from models.exercises import Exercise
+from ..models.exercises import Exercise
 
 
 class ExerciseFormatter(ABC):
