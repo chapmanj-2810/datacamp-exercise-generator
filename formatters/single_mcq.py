@@ -4,7 +4,7 @@ Formatter for single-answer multiple choice exercises.
 
 import random
 from .base import ExerciseFormatter
-from models.exercises import SingleAnswerMCQExercise
+from ..models.exercises import SingleAnswerMCQExercise
 
 
 class SingleAnswerMCQFormatter(ExerciseFormatter):
