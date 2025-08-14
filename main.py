@@ -4,8 +4,8 @@ DataCamp Exercise Generator - Main Usage Examples
 This file demonstrates different ways to use the exercise generator system.
 """
 
-from core import LearningDesigner, load_video_content
-from generators import get_exercise_generator
+from .core import LearningDesigner, load_video_content
+from .generators import get_exercise_generator
 
 
 def main():
