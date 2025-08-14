@@ -3,9 +3,9 @@ Generator for single-answer multiple choice exercises.
 """
 
 from .base import ExerciseGenerator
-from models.exercises import SingleAnswerMCQExercise
-from models.examples import EXERCISE_EXAMPLES
-from formatters.single_mcq import SingleAnswerMCQFormatter
+from ..models.exercises import SingleAnswerMCQExercise
+from ..models.examples import EXERCISE_EXAMPLES
+from ..formatters.single_mcq import SingleAnswerMCQFormatter
 
 
 class SingleAnswerMCQGenerator(ExerciseGenerator):
