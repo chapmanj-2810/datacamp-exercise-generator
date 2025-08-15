@@ -116,11 +116,7 @@ class VideoContentExtractor:
         if title_match:
             extracted_parts.append(f"# {title_match.group(1)}")
         
-        # IMPORTANT: Remove YAML blocks BEFORE extracting other content
-        # Only remove ```yaml blocks, preserve all other code blocks
-        section = self.yaml_block_pattern.sub("", section)
-        
-        # Extract script content
+        # Extract script content (before removing YAML to preserve any code blocks in scripts)
         script_matches = self.script_pattern.findall(section)
         for script in script_matches:
             cleaned_script = self._clean_script_content(script.strip())
@@ -152,7 +148,8 @@ class VideoContentExtractor:
         
         # First, extract and preserve ALL code blocks before any other processing
         code_blocks = []
-        code_block_pattern = re.compile(r"```(\w+)?\s*\n(.*?)\n```", re.DOTALL)
+        # More flexible regex pattern to catch various code block formats
+        code_block_pattern = re.compile(r"```(\w+)?[^\n]*\n?(.*?)```", re.DOTALL)
         
         def preserve_code_block(match):
             """Preserve code blocks by replacing with placeholder."""
@@ -163,6 +160,9 @@ class VideoContentExtractor:
         
         # Replace all code blocks with placeholders
         content = code_block_pattern.sub(preserve_code_block, content)
+        
+        # NOW it's safe to remove YAML blocks (they're preserved as placeholders if they're real code)
+        content = self.yaml_block_pattern.sub("", content)
         
         # Remove metadata patterns (now safe since code blocks are preserved)
         for pattern in self.metadata_patterns:
