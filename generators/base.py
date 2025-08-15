@@ -144,13 +144,16 @@ Each exercise should:
 4. Include helpful guidance for learners
 5. Provide constructive feedback
 6. Test understanding without giving away answers
+7. Use DIFFERENT examples, scenarios, and contexts than those shown in the video - this tests true conceptual understanding rather than memorization
+
+IMPORTANT: Do not reuse the same examples, company names, scenarios, or specific use cases from the video content. Create fresh, original examples that apply the same concepts in new contexts.
 
 {self.get_examples_section()}
 
 Video Content:
 {video_content}
 
-Create exercises with rich, engaging contexts similar to the examples above. Use scenarios, company names, realistic situations, and formatted code blocks where appropriate to make the exercises immersive and engaging.
+Create exercises with rich, engaging contexts similar to the examples above. Use NEW scenarios, different company names, alternative use cases, and fresh code examples where appropriate to make the exercises test conceptual understanding rather than recall.
 
 {self.get_json_schema()}"""
         

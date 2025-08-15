@@ -40,7 +40,7 @@ AVAILABLE EXERCISE TYPES:
 2. **multiple_mcq** (Multiple-Answer Multiple Choice):
    - Best for: Testing understanding of multiple related concepts, identifying several correct approaches
    - Use when: Multiple correct answers exist or learners need to identify all applicable items
-   - Example: "Which of the following are benefits of Y?" (select all that apply)
+   - Example: "Which of the following statements about Y are correct?"
 
 3. **drag_drop_classify** (Drag-and-Drop Classification):
    - Best for: Testing ability to categorize, classify, or sort concepts into groups
@@ -55,12 +55,25 @@ AVAILABLE EXERCISE TYPES:
 
         # Handle provided objectives vs. auto-generated objectives
         if provided_objectives:
-            objectives_section = f"""
+            objectives_count = len(provided_objectives)
+            objectives_list = "\n".join(f'- {obj}' for obj in provided_objectives)
+            
+            if objectives_count <= 3:
+                # 1:1 mapping for 3 or fewer objectives
+                objectives_section = f"""
 PROVIDED LEARNING OBJECTIVES:
-{chr(10).join(f'- {obj}' for obj in provided_objectives)}
+{objectives_list}
 
-IMPORTANT: Create exactly {len(provided_objectives)} exercise(s), with each exercise targeting one specific learning objective from the list above."""
-            task_instruction = f"Create exactly {len(provided_objectives)} exercise(s), one for each provided learning objective."
+IMPORTANT: Create exactly {objectives_count} exercise(s), with each exercise targeting one specific learning objective from the list above."""
+                task_instruction = f"Create exactly {objectives_count} exercise(s), one for each provided learning objective."
+            else:
+                # Amalgamate objectives for 4+ objectives
+                objectives_section = f"""
+PROVIDED LEARNING OBJECTIVES:
+{objectives_list}
+
+IMPORTANT: You have {objectives_count} learning objectives, but create only 2-3 exercises total. Combine related objectives into single exercises that can test multiple concepts together. Each exercise should target 2-3 related learning objectives from the list above."""
+                task_instruction = f"Create 2-3 exercises that combine the {objectives_count} learning objectives. Group related objectives together into single exercises."
         else:
             objectives_section = ""
             task_instruction = "Analyze the video content and create 3-4 exercises covering the key concepts."
@@ -79,7 +92,7 @@ LEARNING DESIGN PRINCIPLES:
 - Each exercise should target one specific, measurable learning objective
 - Vary exercise types to maintain engagement
 - Consider cognitive load and difficulty progression
-- Aim for 3-4 exercises total unless the video is very comprehensive
+- Create 2-3 exercises total
 {objectives_section}
 
 Video Content:
