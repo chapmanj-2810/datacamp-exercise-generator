@@ -25,8 +25,24 @@ class LearningDesigner:
         else:
             self.temperature = temperature
     
-    def create_learning_plan(self, video_content: str, provided_objectives: list[str] = None) -> LearningPlan:
+    def create_learning_plan(self, video_content: str, provided_objectives: list[str] = None, exercise_types: list[str] = None) -> LearningPlan:
         """Analyze video content and create a comprehensive learning plan."""
+        
+        # Handle user-specified exercise types
+        if exercise_types:
+            # Validate provided exercise types
+            valid_types = ["single_mcq", "multiple_mcq", "drag_drop_classify", "drag_drop_order", "coding"]
+            invalid_types = [t for t in exercise_types if t not in valid_types]
+            if invalid_types:
+                raise ValueError(f"Invalid exercise types: {invalid_types}. Valid types: {valid_types}")
+            
+            exercise_types_instruction = f"""
+EXERCISE TYPE CONSTRAINTS:
+You must ONLY use these exercise types: {exercise_types}
+Distribute exercises across these types based on which is most appropriate for each objective.
+"""
+        else:
+            exercise_types_instruction = ""
         
         # Available exercise types and their characteristics
         exercise_type_guide = """
@@ -89,6 +105,7 @@ IMPORTANT: You have {objectives_count} learning objectives, but create only 2-3 
 Determine which exercise types are most appropriate for each learning objective and the optimal order and difficulty progression.
 
 {exercise_type_guide}
+{exercise_types_instruction}
 
 LEARNING DESIGN PRINCIPLES:
 - Start with foundational concepts (single MCQ for definitions/basic understanding)
