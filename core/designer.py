@@ -82,7 +82,7 @@ IMPORTANT: You have {objectives_count} learning objectives, but create only 2-3 
                 task_instruction = f"Create 2-3 exercises that combine the {objectives_count} learning objectives. Group related objectives together into single exercises."
         else:
             objectives_section = ""
-            task_instruction = "Analyze the video content and create 3-4 exercises covering the key concepts."
+            task_instruction = "Analyze the video content and create 2-3 exercises covering the key concepts."
 
         planning_prompt = f"""You are an expert learning designer and curriculum architect for DataCamp. {task_instruction}
 
@@ -117,9 +117,9 @@ Respond with ONLY valid JSON in this exact format:
       "difficulty_level": "Beginner"
     }},
     {{
-      "exercise_type": "coding",
-      "learning_objective": "Programming implementation objective",
-      "rationale": "Why a coding exercise is appropriate for this objective",
+      "exercise_type": "drag_drop_order",
+      "learning_objective": "Sequential process learning objective",
+      "rationale": "Why drag-drop ordering is appropriate for this objective",
       "difficulty_level": "Intermediate"
     }}
   ]
