@@ -6,7 +6,6 @@ This provides both a CLI and example functions for easy notebook usage.
 
 import argparse
 from .core import LearningDesigner, load_video_content
-from .generators import get_exercise_generator
 
 
 def generate_exercises_intelligent(video_file: str, objectives: list[str] = None, exercise_types: list[str] = None, model: str = "gpt-4o") -> list[str]:
@@ -64,7 +63,7 @@ def main():
         exercises = generate_exercises_intelligent(
             args.video_file, 
             args.objectives, 
-            args.exercise_types,
+            getattr(args, 'exercise_types', None),  # Handle hyphenated argument
             args.model
         )
         
