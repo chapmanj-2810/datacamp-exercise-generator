@@ -71,3 +71,20 @@ class DragDropClassifyExercise(Exercise):
     hints: list[str] = Field(description="A list of 1-2 single-sentence statements to help learners")
     drop_zones: list[DropZone] = Field(description="Categories/zones where items can be dropped")
     success_message: str = Field(description="Success message when exercise is completed correctly")
+
+
+# Drag and Drop Order Exercise Components
+class OrderableItem(BaseModel):
+    content: str = Field(description="The text content of the orderable item")
+    id: str = Field(description="Unique identifier for the orderable item")
+    incorrect_message: str = Field(description="Feedback message when item is placed in wrong position")
+
+
+# Drag and Drop Order Exercise
+class DragDropOrderExercise(Exercise):
+    instructions: str = Field(description="Instructions for the learner on how to complete the exercise")
+    hints: list[str] = Field(description="A list of 1-2 single-sentence statements to help learners")
+    ordered_items: list[OrderableItem] = Field(description="Items that need to be placed in correct order")
+    sequence_title: str = Field(description="Title for the sequence/process being ordered")
+    success_message: str = Field(description="Success message when all items are correctly ordered")
+    failure_message: str = Field(description="Message shown when ordering is incorrect", default="Try again!")
