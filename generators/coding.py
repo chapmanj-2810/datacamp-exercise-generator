@@ -38,7 +38,7 @@ Example Code Patterns:
 CRITICAL CODING CONSISTENCY RULES:
 - Use the SAME libraries, functions, and syntax patterns shown in the video content
 - Match the video's coding style and technology stack (e.g., if video uses OpenAI client, use that)
-- Use exactly four underscores (____) for Python scaffolding
+- Use exactly four underscores (____) for scaffolding in all languages apart from R and SQL, where three underscores should be used
 - Place scaffolding on the most educationally relevant parts 
 - Sample and solution code must match EXACTLY except for the ____ parts
 - Scale scaffolding amount based on difficulty (more scaffolding = easier)
