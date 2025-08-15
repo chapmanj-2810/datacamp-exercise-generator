@@ -14,11 +14,11 @@ class DragDropClassifyFormatter(ExerciseFormatter):
         hints_formatted = "\n    ".join(exercise.hints)
         
         # Generate correctness conditions and solution structure
-        correctness_checks = []
-        solution_dropzones = []
+        correctness_checks: list[str] = []
+        solution_dropzones: list[str] = []
         
         for dropzone in exercise.drop_zones:
-            dropzone_items = []
+            dropzone_items: list[str] = []
             
             for item in dropzone.draggable_items:
                 # Create correctness condition
