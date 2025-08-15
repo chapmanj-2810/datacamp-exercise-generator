@@ -31,44 +31,6 @@ def generate_exercises_intelligent(video_file: str, objectives: list[str] = None
     return designer.execute_learning_plan(video_content, learning_plan)
 
 
-def generate_exercises_single_type(video_file: str, exercise_type: str = "single_mcq", 
-                                 objectives: list[str] = None, model: str = "gpt-4o") -> list[str]:
-    """
-    Generate exercises of a specific type.
-    
-    Args:
-        video_file: Path to video transcript
-        exercise_type: "single_mcq", "multiple_mcq", "drag_drop_classify", "drag_drop_order", or "coding"
-        objectives: Optional learning objectives
-        model: OpenAI model to use
-        
-    Returns:
-        List of formatted exercise strings
-    """
-    video_content = load_video_content(video_file)
-    generator = get_exercise_generator(exercise_type, model=model)
-    return generator.generate_markdown_exercises(video_content, objectives)
-
-
-def generate_exercises_single_type(video_file: str, exercise_type: str = "single_mcq", 
-                                 objectives: list[str] = None, model: str = "gpt-4o") -> list[str]:
-    """
-    Generate exercises of a specific type.
-    
-    Args:
-        video_file: Path to video transcript
-        exercise_type: "single_mcq", "multiple_mcq", "drag_drop_classify", "drag_drop_order", or "coding"
-        objectives: Optional learning objectives
-        model: OpenAI model to use
-        
-    Returns:
-        List of formatted exercise strings
-    """
-    video_content = load_video_content(video_file)
-    generator = get_exercise_generator(exercise_type, model=model)
-    return generator.generate_markdown_exercises(video_content, objectives)
-
-
 def print_exercises(exercises: list[str]):
     """Helper function to print exercises with separators."""
     for i, exercise in enumerate(exercises, 1):
