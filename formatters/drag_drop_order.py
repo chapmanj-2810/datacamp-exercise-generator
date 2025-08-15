@@ -2,6 +2,7 @@
 Formatter for drag-and-drop order exercises.
 """
 
+from uuid import uuid4
 from .base import ExerciseFormatter
 from ..models.exercises import DragDropOrderExercise
 
@@ -14,8 +15,8 @@ class DragDropOrderFormatter(ExerciseFormatter):
         hints_formatted = "\n    ".join(exercise.hints)
         
         # Generate correctness conditions for each item in order
-        correctness_checks = []
-        draggable_items = []
+        correctness_checks: list[str] = []
+        draggable_items: list[str] = []
         
         for item in exercise.ordered_items:
             # Create correctness condition - each item must be in correct index position
@@ -35,7 +36,6 @@ class DragDropOrderFormatter(ExerciseFormatter):
         draggable_items_formatted = "\n".join(draggable_items)
         
         # Generate unique ID for the solution container
-        from uuid import uuid4
         solution_id = f"solution_{uuid4().hex[:8]}"
         
         # Construct the full exercise markdown

@@ -12,7 +12,7 @@ from ..models.exercises import Exercise
 
 
 class ExerciseGenerator(ABC):
-    def __init__(self, model="gpt-4o", temperature=0, max_retries=3):
+    def __init__(self, model: str = "gpt-4o", temperature: float = 0, max_retries: int = 3) -> None:
         self.client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
         self.model = model
         self.max_retries = max_retries
@@ -117,7 +117,7 @@ class ExerciseGenerator(ABC):
         # If we get here, braces weren't balanced - return from start to end
         return content[start_pos:]
     
-    def generate_single_attempt(self, video_content: str, learning_objectives: list[str] = None) -> list[Exercise]:
+    def generate_single_attempt(self, video_content: str, learning_objectives: list[str] | None = None) -> list[Exercise]:
         """Generate exercises in a single attempt (no retries)."""
         # Format objectives section
         if learning_objectives:
@@ -170,9 +170,9 @@ Create exercises with rich, engaging contexts similar to the examples above. Use
         parsed = json.loads(content)
         return self.parse_exercises(parsed)
     
-    def generate_exercises(self, video_content: str, learning_objectives: list[str] = None) -> list[Exercise]:
+    def generate_exercises(self, video_content: str, learning_objectives: list[str] | None = None) -> list[Exercise]:
         """Generate exercises with automatic retry on JSON parsing failures."""
-        last_exception = None
+        last_exception: Exception | None = None
         
         for attempt in range(self.max_retries):
             try:
@@ -195,3 +195,8 @@ Create exercises with rich, engaging contexts similar to the examples above. Use
             f"Failed to generate valid {self.get_exercise_type()} exercises after {self.max_retries} attempts. "
             f"Last error: {last_exception}"
         ) from last_exception
+    
+    @abstractmethod
+    def generate_markdown_exercises(self, video_content: str, learning_objectives: list[str] | None = None) -> list[str]:
+        """Generate exercises and format them as markdown strings."""
+        pass
