@@ -37,7 +37,8 @@ class VideoContentExtractor:
         self.empty_bullets_pattern = re.compile(r"^\s*-\s*$", re.MULTILINE)
         self.excessive_whitespace_pattern = re.compile(r"\n\s*\n\s*\n")
         self.whitespace_filter_pattern = re.compile(r"^[&\s]*$")
-        self.code_block_start_pattern = re.compile(r"^```")
+        self.code_block_start_pattern = re.compile(r"^```\w*$")  # Opening code block
+        self.code_block_end_pattern = re.compile(r"^```$")      # Closing code block
     
     def has_video_structure(self, content: str) -> bool:
         """Check if content has DataCamp video structure."""
@@ -161,17 +162,21 @@ class VideoContentExtractor:
         content = self.excessive_whitespace_pattern.sub("\n\n", content)
         
         # Filter out lines that are just whitespace or single characters
-        # BUT preserve code blocks (```python, ```r, etc.)
+        # BUT preserve code blocks (```python, ```r, ```out, etc.)
         lines = []
         in_code_block = False
         
         for line in content.split('\n'):
             stripped_line = line.strip()
             
-            # Check for code block markers
-            if self.code_block_start_pattern.match(stripped_line):
-                in_code_block = not in_code_block
-                lines.append(line)  # Always preserve code block markers
+            # Check for opening code block (```python, ```r, ```out, etc.)
+            if not in_code_block and self.code_block_start_pattern.match(stripped_line):
+                in_code_block = True
+                lines.append(line)  # Preserve opening marker
+            # Check for closing code block (just ```)
+            elif in_code_block and self.code_block_end_pattern.match(stripped_line):
+                in_code_block = False
+                lines.append(line)  # Preserve closing marker
             elif in_code_block:
                 lines.append(line)  # Preserve everything inside code blocks
             elif len(stripped_line) > 1 and not self.whitespace_filter_pattern.match(stripped_line):
