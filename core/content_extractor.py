@@ -9,48 +9,42 @@ class VideoContentExtractor:
     """Extracts meaningful content from DataCamp video transcript files."""
     
     def __init__(self):
-        # Compile patterns once for better performance
-        self.script_pattern = re.compile(r"`@script`\s*\n(.*?)(?=\n\n---|$)", re.DOTALL)
-        self.slide_title_pattern = re.compile(r"^## (.+?)$", re.MULTILINE)
-        self.part_content_pattern = re.compile(r"`@part\d+`\s*\n(.*?)(?=`@|\n\n---|$)", re.DOTALL)
+        # Patterns to identify and extract meaningful content
+        self.script_pattern = r"`@script`\s*\n(.*?)(?=\n\n---|$)"
+        self.slide_title_pattern = r"^## (.+?)$"
+        self.part_content_pattern = r"`@part\d+`\s*\n(.*?)(?=`@|\n\n---|$)"
         
         # YAML frontmatter pattern
-        self.frontmatter_pattern = re.compile(r"^---\s*\n.*?\n---\s*\n", re.DOTALL | re.MULTILINE)
+        self.frontmatter_pattern = r"^---\s*\n.*?\n---\s*\n"
         
-        # YAML code blocks to remove
-        self.yaml_block_pattern = re.compile(r"```yaml\s*\n.*?\n```", re.DOTALL)
+        # YAML code blocks to remove (ONLY YAML - preserve Python, R, etc.)
+        self.yaml_block_pattern = r"```yaml\s*\n.*?\n```"
         
-        # Metadata patterns to remove (compiled for performance)
+        # Metadata patterns to remove
         self.metadata_patterns = [
-            re.compile(r"`@lower_third`.*?(?=\n\n|\n`@|$)", re.DOTALL),
-            re.compile(r"key:\s*[a-f0-9]+"),
-            re.compile(r"type:\s*\w+"),
-            re.compile(r"disable_transition:\s*\w+"),
-            re.compile(r"hide_title:\s*\w+"),
-            re.compile(r"code_zoom:\s*\d+"),
-            re.compile(r"video_link:.*?(?=\n\n|\n---|$)", re.DOTALL),
-            re.compile(r"mp3:\s*>-.*?(?=\n\n|\n---|$)", re.DOTALL)
+            r"`@lower_third`.*?(?=\n\n|\n`@|$)",
+            r"key:\s*[a-f0-9]+",
+            r"type:\s*\w+",
+            r"disable_transition:\s*\w+",
+            r"hide_title:\s*\w+",
+            r"code_zoom:\s*\d+",
+            r"video_link:.*?(?=\n\n|\n---|$)",
+            r"mp3:\s*>-.*?(?=\n\n|\n---|$)"
         ]
-        
-        # Video structure indicators (compiled)
-        self.structure_indicators = [
-            re.compile(r"`@script`", re.MULTILINE),
-            re.compile(r"^## .+$", re.MULTILINE),
-            re.compile(r"```yaml\s*\ntype:", re.MULTILINE),
-            re.compile(r"`@part\d+`", re.MULTILINE),
-            re.compile(r"^---\s*$", re.MULTILINE)
-        ]
-        
-        # Transition numbers and whitespace patterns
-        self.transition_pattern = re.compile(r"\{\{\d+\}\}")
-        self.excessive_whitespace_pattern = re.compile(r"\n\s*\n\s*\n")
-        self.empty_bullets_pattern = re.compile(r"^\s*-\s*$", re.MULTILINE)
     
     def has_video_structure(self, content: str) -> bool:
         """Check if content has DataCamp video structure."""
+        indicators = [
+            r"`@script`",
+            r"^## .+$",  # Slide titles
+            r"```yaml\s*\ntype:",
+            r"`@part\d+`",
+            r"^---\s*$"  # Section separators
+        ]
+        
         indicator_count = 0
-        for pattern in self.structure_indicators:
-            if pattern.search(content):
+        for pattern in indicators:
+            if re.search(pattern, content, re.MULTILINE):
                 indicator_count += 1
         
         # Require at least 2 indicators to consider it structured video content
@@ -59,7 +53,7 @@ class VideoContentExtractor:
     def _clean_plain_text(self, content: str) -> str:
         """Clean plain text content with minimal processing."""
         # Remove excessive whitespace
-        content = self.excessive_whitespace_pattern.sub("\n\n", content)
+        content = re.sub(r"\n\s*\n\s*\n", "\n\n", content)
         
         # Remove empty lines at start and end
         content = content.strip()
@@ -101,7 +95,7 @@ class VideoContentExtractor:
     def _split_into_sections(self, content: str) -> list[str]:
         """Split video content into individual slide sections."""
         # Remove frontmatter first
-        content = self.frontmatter_pattern.sub("", content)
+        content = re.sub(self.frontmatter_pattern, "", content, flags=re.DOTALL | re.MULTILINE)
         
         # Split on slide separators (---)
         sections = re.split(r"\n---\n", content)
@@ -112,22 +106,22 @@ class VideoContentExtractor:
         extracted_parts = []
         
         # Extract slide title
-        title_match = self.slide_title_pattern.search(section)
+        title_match = re.search(self.slide_title_pattern, section, re.MULTILINE)
         if title_match:
             extracted_parts.append(f"# {title_match.group(1)}")
         
-        # Remove YAML blocks
-        section = self.yaml_block_pattern.sub("", section)
+        # Remove YAML blocks (ONLY YAML - preserve code blocks in other languages)
+        section = re.sub(self.yaml_block_pattern, "", section, flags=re.DOTALL)
         
         # Extract script content
-        script_matches = self.script_pattern.findall(section)
+        script_matches = re.findall(self.script_pattern, section, re.DOTALL)
         for script in script_matches:
             cleaned_script = self._clean_script_content(script.strip())
             if cleaned_script:
                 extracted_parts.append(cleaned_script)
         
-        # Extract slide content (from @part1, @part2, etc.)
-        part_matches = self.part_content_pattern.findall(section)
+        # Extract slide content (from @part1, @part2, etc.) - PRESERVING CODE BLOCKS
+        part_matches = re.findall(self.part_content_pattern, section, re.DOTALL)
         for part in part_matches:
             cleaned_part = self._clean_slide_content(part.strip())
             if cleaned_part:
@@ -138,33 +132,43 @@ class VideoContentExtractor:
     def _clean_script_content(self, script: str) -> str:
         """Clean script content by removing metadata and formatting."""
         # Remove slide transition numbers like {{1}}, {{2}}
-        script = self.transition_pattern.sub("", script)
+        script = re.sub(r"\{\{\d+\}\}", "", script)
         
         # Remove empty lines and extra whitespace
         lines = [line.strip() for line in script.split('\n') if line.strip()]
         return ' '.join(lines)
     
     def _clean_slide_content(self, content: str) -> str:
-        """Clean slide content by removing metadata while preserving formatting."""
+        """Clean slide content by removing metadata while PRESERVING CODE BLOCKS."""
         # Remove slide transition numbers
-        content = self.transition_pattern.sub("", content)
+        content = re.sub(r"\{\{\d+\}\}", "", content)
         
-        # Remove metadata patterns
+        # Remove metadata patterns (but NOT code blocks)
         for pattern in self.metadata_patterns:
-            content = pattern.sub("", content)
+            content = re.sub(pattern, "", content, flags=re.DOTALL | re.MULTILINE)
         
         # Clean up empty bullet points only
-        content = self.empty_bullets_pattern.sub("", content)
+        content = re.sub(r"^\s*-\s*$", "", content, flags=re.MULTILINE)  # Empty bullets
         
-        # Remove excessive whitespace
-        content = self.excessive_whitespace_pattern.sub("\n\n", content)
+        # Remove excessive whitespace (but preserve code block structure)
+        content = re.sub(r"\n\s*\n\s*\n", "\n\n", content)
         
         # Filter out lines that are just whitespace or single characters
+        # BUT preserve code blocks (```python, ```r, etc.)
         lines = []
+        in_code_block = False
+        
         for line in content.split('\n'):
-            line = line.strip()
-            if len(line) > 1 and not re.match(r"^[&\s]*$", line):
-                lines.append(line)
+            stripped_line = line.strip()
+            
+            # Check for code block markers
+            if stripped_line.startswith('```'):
+                in_code_block = not in_code_block
+                lines.append(line)  # Always preserve code block markers
+            elif in_code_block:
+                lines.append(line)  # Preserve everything inside code blocks
+            elif len(stripped_line) > 1 and not re.match(r"^[&\s]*$", stripped_line):
+                lines.append(line)  # Normal content filtering
         
         return '\n'.join(lines)
     
