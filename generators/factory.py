@@ -6,6 +6,7 @@ from .base import ExerciseGenerator
 from .single_mcq import SingleAnswerMCQGenerator
 from .multiple_mcq import MultipleAnswerMCQGenerator
 from .drag_drop_classify import DragDropClassifyGenerator
+from .drag_drop_order import DragDropOrderGenerator
 
 
 def get_exercise_generator(exercise_type: str = "single_mcq", **kwargs) -> ExerciseGenerator:
@@ -14,6 +15,7 @@ def get_exercise_generator(exercise_type: str = "single_mcq", **kwargs) -> Exerc
         "single_mcq": SingleAnswerMCQGenerator,
         "multiple_mcq": MultipleAnswerMCQGenerator,
         "drag_drop_classify": DragDropClassifyGenerator,
+        "drag_drop_order": DragDropOrderGenerator,
     }
     
     if exercise_type not in generators:

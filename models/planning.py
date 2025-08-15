@@ -11,6 +11,7 @@ class ExerciseType(str, Enum):
     SINGLE_MCQ = "single_mcq"
     MULTIPLE_MCQ = "multiple_mcq"
     DRAG_DROP_CLASSIFY = "drag_drop_classify"
+    DRAG_DROP_ORDER = "drag_drop_order"
 
 
 class ExercisePlan(BaseModel):

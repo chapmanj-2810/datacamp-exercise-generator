@@ -91,5 +91,43 @@ Before putting this into production, you want to perform a series of tests to gi
             "Remember that higher normalization levels reduce redundancy but may require more complex queries.",
             "Think about whether the paradigm focuses on data transformation, object modeling, or explicit instructions."
         ]
+    },
+    "drag_drop_order": {
+        "titles": [
+            "API data flow",
+            "Machine learning pipeline steps",
+            "Software development lifecycle",
+            "Data preprocessing workflow",
+            "Model deployment process"
+        ],
+        "contexts": [
+            """As you've seen, an Application Programming Interface (API) allows for communication between services. This allows your application to communicate data to and from the machine learning model.
+
+![Application programming interface excluding information](https://assets.datacamp.com/production/repositories/6056/datasets/08241d8a27e23be51b22dc453edbbe72235c3d1e/microservice_communication.png)
+
+In this exercise, you will order the steps in the data flow of an API request to a machine learning model.""",
+            
+            """You're leading a data science team that's building their first end-to-end machine learning pipeline. The junior engineers understand the individual components but are struggling with the correct sequence of steps.
+
+As the technical lead, you need to help them understand the proper workflow for training and deploying a machine learning model.""",
+            
+            """Your startup is implementing agile development practices, and the new developer on your team is confused about the software development lifecycle. They understand what each phase involves but aren't sure about the proper order.
+
+As a senior developer, you want to help them understand the sequential nature of software development."""
+        ],
+        "instructions": [
+            "Order the sequence of an API request to a machine learning model.",
+            "Arrange the machine learning pipeline steps in the correct order.",
+            "Put the software development lifecycle phases in the proper sequence.",
+            "Order the data preprocessing steps from raw data to model-ready data.",
+            "Sequence the model deployment steps from training to production."
+        ],
+        "hints": [
+            "First, new, unseen input data comes in, then the model makes a prediction, and returns the output through the API.",
+            "Remember that data must be collected before it can be cleaned, and models must be trained before they can be evaluated.",
+            "Planning comes before implementation, and testing comes before deployment.",
+            "Raw data needs to be cleaned before feature engineering, and features must be selected before model training.",
+            "Models must be trained and validated before they can be deployed to production environments."
+        ]
     }
 }

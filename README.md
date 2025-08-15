@@ -6,6 +6,7 @@ An intelligent system for automatically generating DataCamp exercises from video
 - 🤖 Intelligent exercise type selection
 - 📝 Multiple choice questions (single and multiple answer)
 - 🏷️ Drag-and-drop classification exercises
+- 📋 Drag-and-drop ordering exercises for workflows and processes
 - 🎯 Learning objective-driven generation  
 - 🏗️ Modular, extensible architecture
 - 💻 Both CLI and Python API support

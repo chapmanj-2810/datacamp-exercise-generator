@@ -46,6 +46,11 @@ AVAILABLE EXERCISE TYPES:
    - Best for: Testing ability to categorize, classify, or sort concepts into groups
    - Use when: Learners need to demonstrate understanding of how items relate to categories
    - Example: "Classify these algorithms as supervised or unsupervised learning"
+
+4. **drag_drop_order** (Drag-and-Drop Ordering):
+   - Best for: Testing understanding of sequential processes, workflows, or procedures
+   - Use when: Learners need to demonstrate knowledge of step-by-step processes
+   - Example: "Order the steps in the machine learning pipeline from data collection to deployment"
 """
 
         # Handle provided objectives vs. auto-generated objectives
@@ -70,6 +75,7 @@ LEARNING DESIGN PRINCIPLES:
 - Start with foundational concepts (single MCQ for definitions/basic understanding)
 - Progress to application and synthesis (multiple MCQ for identifying multiple approaches/benefits)
 - Use drag-drop classification for categorization and grouping concepts
+- Use drag-drop ordering for sequential processes, workflows, and procedures
 - Each exercise should target one specific, measurable learning objective
 - Vary exercise types to maintain engagement
 - Consider cognitive load and difficulty progression
@@ -91,15 +97,9 @@ Respond with ONLY valid JSON in this exact format:
       "difficulty_level": "Beginner"
     }},
     {{
-      "exercise_type": "multiple_mcq", 
-      "learning_objective": "Another learning objective",
-      "rationale": "Why multiple choice with multiple answers fits this objective",
-      "difficulty_level": "Intermediate"
-    }},
-    {{
-      "exercise_type": "drag_drop_classify",
-      "learning_objective": "Classification learning objective",
-      "rationale": "Why drag-drop classification is appropriate for this objective",
+      "exercise_type": "drag_drop_order",
+      "learning_objective": "Sequential process learning objective",
+      "rationale": "Why drag-drop ordering is appropriate for this objective",
       "difficulty_level": "Intermediate"
     }}
   ]
