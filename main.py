@@ -6,7 +6,6 @@ This provides both a CLI and example functions for easy notebook usage.
 
 import argparse
 from .core import LearningDesigner, load_video_content
-from .generators import get_exercise_generator
 
 
 def generate_exercises_intelligent(video_file: str, objectives: list[str] = None, exercise_types: list[str] = None, model: str = "gpt-4o") -> list[str]:
@@ -88,8 +87,6 @@ def main():
     parser.add_argument("--exercise-types", nargs="+", 
                        choices=["single_mcq", "multiple_mcq", "drag_drop_classify", "drag_drop_order", "coding"],
                        help="Specific exercise types to use (optional)")
-    parser.add_argument("--type", choices=["single_mcq", "multiple_mcq", "drag_drop_classify", "drag_drop_order", "coding", "intelligent"], 
-                       default="intelligent", help="Exercise generation type")
     parser.add_argument("--model", default="gpt-4o", help="OpenAI model to use")
     parser.add_argument("--output", help="Output file (optional, prints to stdout if not provided)")
     
@@ -100,16 +97,13 @@ def main():
         print(f"Note: {args.model} automatically uses temperature=1.0 (required by OpenAI)")
     
     try:
-        # Generate exercises based on type
-        if args.type == "intelligent":
-            exercises = generate_exercises_intelligent(
-                args.video_file, 
-                args.objectives, 
-                getattr(args, 'exercise_types', None),  # Handle hyphenated argument
-                args.model
-            )
-        else:
-            exercises = generate_exercises_single_type(args.video_file, args.type, args.objectives, args.model)
+        # Generate exercises using intelligent design
+        exercises = generate_exercises_intelligent(
+            args.video_file, 
+            args.objectives, 
+            getattr(args, 'exercise_types', None),  # Handle hyphenated argument
+            args.model
+        )
         
         # Format output
         output = "\n---\n".join(exercises)
