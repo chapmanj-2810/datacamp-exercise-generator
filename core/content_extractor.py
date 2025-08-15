@@ -17,7 +17,7 @@ class VideoContentExtractor:
         # YAML frontmatter pattern
         self.frontmatter_pattern = re.compile(r"^---\s*\n.*?\n---\s*\n", re.DOTALL | re.MULTILINE)
         
-        # YAML code blocks to remove (ONLY YAML - preserve Python, R, etc.)
+        # YAML code blocks to remove (ONLY YAML - be more specific to avoid catching other languages)
         self.yaml_block_pattern = re.compile(r"```yaml\s*\n.*?\n```", re.DOTALL)
         
         # Metadata patterns to remove - compiled for performance
@@ -37,8 +37,6 @@ class VideoContentExtractor:
         self.empty_bullets_pattern = re.compile(r"^\s*-\s*$", re.MULTILINE)
         self.excessive_whitespace_pattern = re.compile(r"\n\s*\n\s*\n")
         self.whitespace_filter_pattern = re.compile(r"^[&\s]*$")
-        self.code_block_start_pattern = re.compile(r"^```\w*$")  # Opening code block
-        self.code_block_end_pattern = re.compile(r"^```$")      # Closing code block
     
     def has_video_structure(self, content: str) -> bool:
         """Check if content has DataCamp video structure."""
@@ -118,7 +116,8 @@ class VideoContentExtractor:
         if title_match:
             extracted_parts.append(f"# {title_match.group(1)}")
         
-        # Remove YAML blocks (ONLY YAML - preserve code blocks in other languages)
+        # IMPORTANT: Remove YAML blocks BEFORE extracting other content
+        # Only remove ```yaml blocks, preserve all other code blocks
         section = self.yaml_block_pattern.sub("", section)
         
         # Extract script content
@@ -128,7 +127,7 @@ class VideoContentExtractor:
             if cleaned_script:
                 extracted_parts.append(cleaned_script)
         
-        # Extract slide content (from @part1, @part2, etc.) - PRESERVING CODE BLOCKS
+        # Extract slide content (from @part1, @part2, etc.) - PRESERVING ALL CODE BLOCKS
         part_matches = self.part_content_pattern.findall(section)
         for part in part_matches:
             cleaned_part = self._clean_slide_content(part.strip())
@@ -147,60 +146,50 @@ class VideoContentExtractor:
         return ' '.join(lines)
     
     def _clean_slide_content(self, content: str) -> str:
-        """Clean slide content by removing metadata while PRESERVING CODE BLOCKS."""
+        """Clean slide content while aggressively PRESERVING ALL CODE BLOCKS."""
         # Remove slide transition numbers
         content = self.transition_numbers_pattern.sub("", content)
         
-        # Remove metadata patterns (but NOT code blocks)
+        # First, extract and preserve ALL code blocks before any other processing
+        code_blocks = []
+        code_block_pattern = re.compile(r"```(\w+)?\s*\n(.*?)\n```", re.DOTALL)
+        
+        def preserve_code_block(match):
+            """Preserve code blocks by replacing with placeholder."""
+            nonlocal code_blocks
+            placeholder = f"__CODE_BLOCK_{len(code_blocks)}__"
+            code_blocks.append(match.group(0))  # Store entire code block
+            return placeholder
+        
+        # Replace all code blocks with placeholders
+        content = code_block_pattern.sub(preserve_code_block, content)
+        
+        # Remove metadata patterns (now safe since code blocks are preserved)
         for pattern in self.metadata_patterns:
             content = pattern.sub("", content)
         
-        # Clean up empty bullet points only
+        # Clean up empty bullet points
         content = self.empty_bullets_pattern.sub("", content)
         
-        # Remove excessive whitespace (but preserve code block structure)
+        # Remove excessive whitespace
         content = self.excessive_whitespace_pattern.sub("\n\n", content)
         
-        # Filter out lines that are just whitespace or single characters
-        # BUT preserve code blocks (```python, ```r, ```out, etc.)
+        # Filter out empty lines and single characters
         lines = []
-        in_code_block = False
-        
         for line in content.split('\n'):
             stripped_line = line.strip()
-            
-            # Check for opening code block (```python, ```r, ```out, etc.)
-            if not in_code_block and self.code_block_start_pattern.match(stripped_line):
-                in_code_block = True
-                lines.append(line)  # Preserve opening marker
-            # Check for closing code block (just ```)
-            elif in_code_block and self.code_block_end_pattern.match(stripped_line):
-                in_code_block = False
-                lines.append(line)  # Preserve closing marker
-            elif in_code_block:
-                lines.append(line)  # Preserve everything inside code blocks
-            elif len(stripped_line) > 1 and not self.whitespace_filter_pattern.match(stripped_line):
-                lines.append(line)  # Normal content filtering
+            if len(stripped_line) > 1 and not self.whitespace_filter_pattern.match(stripped_line):
+                lines.append(line)
         
-        return '\n'.join(lines)
+        content = '\n'.join(lines)
+        
+        # Restore all code blocks
+        for i, code_block in enumerate(code_blocks):
+            placeholder = f"__CODE_BLOCK_{i}__"
+            content = content.replace(placeholder, code_block)
+        
+        return content
     
-    def get_content_summary(self, video_content: str) -> dict[str, int | str]:
-        """Get statistics about original vs extracted content."""
-        extracted = self.extract_meaningful_content(video_content)
-        
-        # Determine content type
-        content_type = "structured_video" if self.has_video_structure(video_content) else "plain_text"
-        
-        return {
-            "original_chars": len(video_content),
-            "extracted_chars": len(extracted),
-            "reduction_percentage": round((1 - len(extracted) / len(video_content)) * 100, 1),
-            "original_lines": len(video_content.split('\n')),
-            "extracted_lines": len(extracted.split('\n')),
-            "content_type": content_type
-        }
-
-
 def extract_video_content(video_content: str) -> str:
     """Convenience function to extract meaningful content from video transcript."""
     extractor = VideoContentExtractor()
