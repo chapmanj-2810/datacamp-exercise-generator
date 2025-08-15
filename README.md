@@ -119,7 +119,6 @@ datacamp-exercise-generator/
 4. Create a formatter in `formatters/`
 5. Register in the factory function
 
-
 ## Development
 
 ### Running Tests
