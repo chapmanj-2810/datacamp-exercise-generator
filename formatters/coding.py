@@ -26,7 +26,7 @@ class CodingFormatter(ExerciseFormatter):
 ```yaml
 type: NormalExercise
 key: {exercise_key}
-xp: {exercise.xp}
+xp: 100
 ```
 
 {exercise.context}
