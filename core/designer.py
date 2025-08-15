@@ -25,24 +25,8 @@ class LearningDesigner:
         else:
             self.temperature = temperature
     
-    def create_learning_plan(self, video_content: str, provided_objectives: list[str] = None, exercise_types: list[str] = None) -> LearningPlan:
+    def create_learning_plan(self, video_content: str, provided_objectives: list[str] = None) -> LearningPlan:
         """Analyze video content and create a comprehensive learning plan."""
-        
-        # Handle user-specified exercise types
-        if exercise_types:
-            # Validate provided exercise types
-            valid_types = ["single_mcq", "multiple_mcq", "drag_drop_classify", "drag_drop_order"]
-            invalid_types = [t for t in exercise_types if t not in valid_types]
-            if invalid_types:
-                raise ValueError(f"Invalid exercise types: {invalid_types}. Valid types: {valid_types}")
-            
-            exercise_types_instruction = f"""
-EXERCISE TYPE CONSTRAINTS:
-You must ONLY use these exercise types: {exercise_types}
-Distribute exercises across these types based on which is most appropriate for each objective.
-"""
-        else:
-            exercise_types_instruction = ""
         
         # Available exercise types and their characteristics
         exercise_type_guide = """
@@ -67,6 +51,12 @@ AVAILABLE EXERCISE TYPES:
    - Best for: Testing understanding of sequential processes, workflows, or procedures
    - Use when: Learners need to demonstrate knowledge of step-by-step processes
    - Example: "Order the steps in the machine learning pipeline from data collection to deployment"
+
+5. **coding** (Coding Exercise):
+   - Best for: Hands-on implementation of concepts, applying programming skills
+   - Use when: Learners need to practice writing code, implementing algorithms, or using specific functions/libraries
+   - Example: "Implement a function to calculate similarity between vectors" or "Complete the code to preprocess the dataset"
+   - Note: Most effective for programming-focused content where learners need practical coding experience
 """
 
         # Handle provided objectives vs. auto-generated objectives
@@ -92,20 +82,20 @@ IMPORTANT: You have {objectives_count} learning objectives, but create only 2-3 
                 task_instruction = f"Create 2-3 exercises that combine the {objectives_count} learning objectives. Group related objectives together into single exercises."
         else:
             objectives_section = ""
-            task_instruction = "Analyze the video content and create 2-3 exercises covering the key concepts."
+            task_instruction = "Analyze the video content and create 3-4 exercises covering the key concepts."
 
         planning_prompt = f"""You are an expert learning designer and curriculum architect for DataCamp. {task_instruction}
 
 Determine which exercise types are most appropriate for each learning objective and the optimal order and difficulty progression.
 
 {exercise_type_guide}
-{exercise_types_instruction}
 
 LEARNING DESIGN PRINCIPLES:
 - Start with foundational concepts (single MCQ for definitions/basic understanding)
 - Progress to application and synthesis (multiple MCQ for identifying multiple approaches/benefits)
 - Use drag-drop classification for categorization and grouping concepts
 - Use drag-drop ordering for sequential processes, workflows, and procedures
+- Use coding exercises for hands-on implementation and practical programming skills
 - Each exercise should target one specific, measurable learning objective
 - Vary exercise types to maintain engagement
 - Consider cognitive load and difficulty progression
@@ -127,9 +117,9 @@ Respond with ONLY valid JSON in this exact format:
       "difficulty_level": "Beginner"
     }},
     {{
-      "exercise_type": "drag_drop_order",
-      "learning_objective": "Sequential process learning objective",
-      "rationale": "Why drag-drop ordering is appropriate for this objective",
+      "exercise_type": "coding",
+      "learning_objective": "Programming implementation objective",
+      "rationale": "Why a coding exercise is appropriate for this objective",
       "difficulty_level": "Intermediate"
     }}
   ]
