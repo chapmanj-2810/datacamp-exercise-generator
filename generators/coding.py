@@ -35,11 +35,14 @@ Example Code Patterns:
     def get_json_schema(self) -> str:
         return """Respond with ONLY valid JSON in this exact format (no markdown, no extra text).
 
-CRITICAL SCAFFOLDING RULES:
+CRITICAL CODING CONSISTENCY RULES:
+- Use the SAME libraries, functions, and syntax patterns shown in the video content
+- Match the video's coding style and technology stack (e.g., if video uses OpenAI client, use that)
 - Use exactly four underscores (____) for Python scaffolding
 - Place scaffolding on the most educationally relevant parts 
 - Sample and solution code must match EXACTLY except for the ____ parts
 - Scale scaffolding amount based on difficulty (more scaffolding = easier)
+- Create scenarios that apply the same concepts but don't give away the exact solution
 
 {
   "exercises": [
