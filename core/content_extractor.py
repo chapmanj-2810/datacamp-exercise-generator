@@ -32,16 +32,50 @@ class VideoContentExtractor:
             r"mp3:\s*>-.*?(?=\n\n|\n---|$)"
         ]
     
+    def has_video_structure(self, content: str) -> bool:
+        """Check if content has DataCamp video structure."""
+        indicators = [
+            r"`@script`",
+            r"^## .+$",  # Slide titles
+            r"```yaml\s*\ntype:",
+            r"`@part\d+`",
+            r"^---\s*$"  # Section separators
+        ]
+        
+        indicator_count = 0
+        for pattern in indicators:
+            if re.search(pattern, content, re.MULTILINE):
+                indicator_count += 1
+        
+        # Require at least 2 indicators to consider it structured video content
+        return indicator_count >= 2
+    
+    def _clean_plain_text(self, content: str) -> str:
+        """Clean plain text content with minimal processing."""
+        # Remove excessive whitespace
+        content = re.sub(r"\n\s*\n\s*\n", "\n\n", content)
+        
+        # Remove empty lines at start and end
+        content = content.strip()
+        
+        return content
+    
     def extract_meaningful_content(self, video_content: str) -> str:
         """
-        Extract only meaningful content (titles, scripts, slide content) from video file.
+        Extract meaningful content from either structured video files or plain text files.
+        Automatically detects the file type and applies appropriate processing.
         
         Args:
-            video_content: Raw video transcript content
+            video_content: Raw file content (structured video transcript or plain text)
             
         Returns:
-            Cleaned content with only titles, scripts, and slide content
+            Cleaned content appropriate for exercise generation
         """
+        if not self.has_video_structure(video_content):
+            # Plain text file - return with minimal cleaning
+            return self._clean_plain_text(video_content)
+        
+        # Structured video file - apply full extraction
         sections = self._split_into_sections(video_content)
         meaningful_content = []
         
@@ -50,7 +84,13 @@ class VideoContentExtractor:
             if extracted.strip():  # Only add non-empty content
                 meaningful_content.append(extracted)
         
-        return "\n\n".join(meaningful_content)
+        result = "\n\n".join(meaningful_content)
+        
+        # Fallback: if structured extraction found nothing, treat as plain text
+        if not result.strip():
+            return self._clean_plain_text(video_content)
+        
+        return result
     
     def _split_into_sections(self, content: str) -> list[str]:
         """Split video content into individual slide sections."""
@@ -122,16 +162,20 @@ class VideoContentExtractor:
         
         return '\n'.join(lines)
     
-    def get_content_summary(self, video_content: str) -> dict[str, int]:
+    def get_content_summary(self, video_content: str) -> dict[str, int | str]:
         """Get statistics about original vs extracted content."""
         extracted = self.extract_meaningful_content(video_content)
+        
+        # Determine content type
+        content_type = "structured_video" if self.has_video_structure(video_content) else "plain_text"
         
         return {
             "original_chars": len(video_content),
             "extracted_chars": len(extracted),
             "reduction_percentage": round((1 - len(extracted) / len(video_content)) * 100, 1),
             "original_lines": len(video_content.split('\n')),
-            "extracted_lines": len(extracted.split('\n'))
+            "extracted_lines": len(extracted.split('\n')),
+            "content_type": content_type
         }
 
 
