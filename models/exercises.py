@@ -116,10 +116,6 @@ class CodingExercise(Exercise):
         description="Programming language for the exercise",
         default="python"
     )
-    xp: int = Field(
-        description="Experience points awarded for completing the exercise",
-        default=100
-    )
 
     class Config:
         schema_extra = {
@@ -132,7 +128,6 @@ class CodingExercise(Exercise):
                 "sample_code": "# Extract and embed the descriptions from sentiments\nclass_descriptions = ____\nclass_embeddings = ____",
                 "solution_code": "# Extract and embed the descriptions from sentiments\nclass_descriptions = [sentiment['description'] for sentiment in sentiments]\nclass_embeddings = create_embeddings(class_descriptions)",
                 "success_message": "There you have it! This time, you were able to correctly classify the second review!",
-                "language": "python",
-                "xp": 100
+                "language": "python"
             }
         }
