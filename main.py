@@ -37,7 +37,7 @@ def generate_exercises_single_type(video_file: str, exercise_type: str = "single
     
     Args:
         video_file: Path to video transcript
-        exercise_type: "single_mcq", "multiple_mcq", or "drag_drop_classify"
+        exercise_type: "single_mcq", "multiple_mcq", "drag_drop_classify", or "drag_drop_order"
         objectives: Optional learning objectives
         model: OpenAI model to use
         
@@ -64,7 +64,7 @@ def main():
     
     parser.add_argument("video_file", help="Path to the video transcript markdown file")
     parser.add_argument("--objectives", nargs="+", help="Learning objectives (optional)")
-    parser.add_argument("--type", choices=["single_mcq", "multiple_mcq", "drag_drop_classify", "intelligent"], 
+    parser.add_argument("--type", choices=["single_mcq", "multiple_mcq", "drag_drop_classify", "drag_drop_order", "intelligent"], 
                        default="intelligent", help="Exercise generation type")
     parser.add_argument("--model", default="gpt-4o", help="OpenAI model to use")
     parser.add_argument("--output", help="Output file (optional, prints to stdout if not provided)")
