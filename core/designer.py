@@ -56,7 +56,7 @@ AVAILABLE EXERCISE TYPES:
 2. **multiple_mcq** (Multiple-Answer Multiple Choice):
    - Best for: Testing understanding of multiple related concepts, identifying several correct approaches
    - Use when: Multiple correct answers exist or learners need to identify all applicable items
-   - Example: "Which of the following are benefits of Y?" (select all that apply)
+   - Example: "Which of the following statements about Y are correct?"
 
 3. **drag_drop_classify** (Drag-and-Drop Classification):
    - Best for: Testing ability to categorize, classify, or sort concepts into groups
@@ -92,7 +92,7 @@ IMPORTANT: You have {objectives_count} learning objectives, but create only 2-3 
                 task_instruction = f"Create 2-3 exercises that combine the {objectives_count} learning objectives. Group related objectives together into single exercises."
         else:
             objectives_section = ""
-            task_instruction = "Analyze the video content and create 3-4 exercises covering the key concepts."
+            task_instruction = "Analyze the video content and create 2-3 exercises covering the key concepts."
 
         planning_prompt = f"""You are an expert learning designer and curriculum architect for DataCamp. {task_instruction}
 
@@ -109,7 +109,7 @@ LEARNING DESIGN PRINCIPLES:
 - Each exercise should target one specific, measurable learning objective
 - Vary exercise types to maintain engagement
 - Consider cognitive load and difficulty progression
-- Aim for 3-4 exercises total unless the video is very comprehensive
+- Create 2-3 exercises total
 {objectives_section}
 
 Video Content:
