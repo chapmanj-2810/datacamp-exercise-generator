@@ -6,7 +6,7 @@ This package contains all Pydantic models and data structures used throughout th
 
 from .exercises import (
     Exercise, SingleAnswerMCQExercise, MultipleAnswerMCQExercise,
-    DragDropClassifyExercise, DragDropOrderExercise,
+    DragDropClassifyExercise, DragDropOrderExercise, CodingExercise,
     DraggableItem, DropZone, OrderableItem
 )
 from .planning import ExerciseType, ExercisePlan, LearningPlan
@@ -18,6 +18,7 @@ __all__ = [
     "MultipleAnswerMCQExercise",
     "DragDropClassifyExercise",
     "DragDropOrderExercise",
+    "CodingExercise",
     "DraggableItem",
     "DropZone", 
     "OrderableItem",

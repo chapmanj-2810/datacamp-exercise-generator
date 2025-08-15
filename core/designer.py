@@ -31,7 +31,7 @@ class LearningDesigner:
         # Handle user-specified exercise types
         if exercise_types:
             # Validate provided exercise types
-            valid_types = ["single_mcq", "multiple_mcq", "drag_drop_classify", "drag_drop_order"]
+            valid_types = ["single_mcq", "multiple_mcq", "drag_drop_classify", "drag_drop_order", "coding"]
             invalid_types = [t for t in exercise_types if t not in valid_types]
             if invalid_types:
                 raise ValueError(f"Invalid exercise types: {invalid_types}. Valid types: {valid_types}")
@@ -67,6 +67,12 @@ AVAILABLE EXERCISE TYPES:
    - Best for: Testing understanding of sequential processes, workflows, or procedures
    - Use when: Learners need to demonstrate knowledge of step-by-step processes
    - Example: "Order the steps in the machine learning pipeline from data collection to deployment"
+
+5. **coding** (Coding Exercise):
+   - Best for: Hands-on implementation of concepts, applying programming skills
+   - Use when: Learners need to practice writing code, implementing algorithms, or using specific functions/libraries
+   - Example: "Implement a function to calculate similarity between vectors" or "Complete the code to preprocess the dataset"
+   - Note: Most effective for programming-focused content where learners need practical coding experience
 """
 
         # Handle provided objectives vs. auto-generated objectives
@@ -106,6 +112,7 @@ LEARNING DESIGN PRINCIPLES:
 - Progress to application and synthesis (multiple MCQ for identifying multiple approaches/benefits)
 - Use drag-drop classification for categorization and grouping concepts
 - Use drag-drop ordering for sequential processes, workflows, and procedures
+- Use coding exercises for hands-on implementation and practical programming skills
 - Each exercise should target one specific, measurable learning objective
 - Vary exercise types to maintain engagement
 - Consider cognitive load and difficulty progression

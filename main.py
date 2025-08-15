@@ -47,7 +47,7 @@ def main():
     parser.add_argument("video_file", help="Path to the video transcript markdown file")
     parser.add_argument("--objectives", nargs="+", help="Learning objectives (optional)")
     parser.add_argument("--exercise-types", nargs="+", 
-                       choices=["single_mcq", "multiple_mcq", "drag_drop_classify", "drag_drop_order"],
+                       choices=["single_mcq", "multiple_mcq", "drag_drop_classify", "drag_drop_order", "coding"],
                        help="Specific exercise types to use (optional)")
     parser.add_argument("--model", default="gpt-4o", help="OpenAI model to use")
     parser.add_argument("--output", help="Output file (optional, prints to stdout if not provided)")

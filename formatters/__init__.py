@@ -9,11 +9,13 @@ from .single_mcq import SingleAnswerMCQFormatter
 from .multiple_mcq import MultipleAnswerMCQFormatter
 from .drag_drop_classify import DragDropClassifyFormatter
 from .drag_drop_order import DragDropOrderFormatter
+from .coding import CodingFormatter
 
 __all__ = [
     "ExerciseFormatter",
     "SingleAnswerMCQFormatter",
     "MultipleAnswerMCQFormatter",
     "DragDropClassifyFormatter",
-    "DragDropOrderFormatter"
+    "DragDropOrderFormatter",
+    "CodingFormatter"
 ]
