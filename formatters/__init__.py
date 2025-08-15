@@ -8,10 +8,12 @@ from .base import ExerciseFormatter
 from .single_mcq import SingleAnswerMCQFormatter
 from .multiple_mcq import MultipleAnswerMCQFormatter
 from .drag_drop_classify import DragDropClassifyFormatter
+from .drag_drop_order import DragDropOrderFormatter
 
 __all__ = [
     "ExerciseFormatter",
     "SingleAnswerMCQFormatter",
     "MultipleAnswerMCQFormatter",
-    "DragDropClassifyFormatter"
+    "DragDropClassifyFormatter",
+    "DragDropOrderFormatter"
 ]
